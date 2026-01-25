@@ -47,6 +47,3 @@ uvicorn app.main:app --reload
 - `POST /api/analyze` - Analyze a Pull Request
 - `GET /api/results/{pr_id}` - Get analysis results
 - `GET /api/health` - Health check
-
-## Owner
-**Arjun** - Primary developer

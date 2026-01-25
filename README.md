@@ -38,9 +38,9 @@ Security-Gate/
 - `dev` - Integration branch (daily merges)
 
 ### Personal Branches
-- `arjun` - Backend + ML Model
-- `kunal` - Frontend + CI/CD
-- `aditya` - Blockchain + AI Integration
+- `arjun` - Personal development branch
+- `kunal` - Personal development branch
+- `aditya` - Personal development branch
 
 ---
 
@@ -138,9 +138,9 @@ This project is for educational purposes.
 
 ## 🤝 Contributors
 
-- **Arjun** - Backend & ML Engineering
-- **Kunal** - Frontend & DevOps
-- **Aditya** - Blockchain & AI Integration
+- **Arjun**
+- **Kunal**
+- **Aditya**
 
 ---
 

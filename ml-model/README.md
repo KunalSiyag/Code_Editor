@@ -56,6 +56,3 @@ python scripts/evaluate.py
 - Accuracy: 75%+
 - F1 Score: 0.80+
 - ROC-AUC: 0.85+
-
-## Owner
-**Arjun** - Primary developer

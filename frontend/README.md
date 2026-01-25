@@ -44,6 +44,3 @@ npm run build
 - TailwindCSS
 - Recharts (for charts)
 - Axios (API client)
-
-## Owner
-**Kunal** - Primary developer

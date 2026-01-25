@@ -6,6 +6,3 @@
 - Setup guides
 - Development guidelines
 - Deployment instructions
-
-## Owner
-**Aditya** - Documentation lead
