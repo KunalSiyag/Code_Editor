@@ -43,6 +43,3 @@ npx hardhat run scripts/deploy.js --network sepolia
 - Network: Sepolia
 - Explorer: https://sepolia.etherscan.io
 - Faucet: https://sepoliafaucet.com
-
-## Owner
-**Aditya** - Primary developer
