@@ -98,3 +98,6 @@ coverage/
 tmp/
 temp/
 *.tmp
+.secrets.toml
+.env
+.pr_agent.toml
