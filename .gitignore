@@ -37,3 +37,4 @@ build/
 *.tmp
 .DS_Store
 Thumbs.db
+dataset/*.json
