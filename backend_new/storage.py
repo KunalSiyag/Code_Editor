@@ -9,6 +9,7 @@ from functools import lru_cache
 from typing import Any
 
 from dotenv import load_dotenv
+from blockchain import record_scan_verification
 
 load_dotenv()
 
@@ -44,7 +45,7 @@ def _scan_total_issues(scan: dict[str, Any]) -> int:
 
 
 def build_scan_record(repo_url: str, pr_url: str, result: dict[str, Any]) -> dict[str, Any]:
-    return {
+    scan = {
         "repo_url": repo_url,
         "pr_url": pr_url,
         "scanned_at": _utc_now_iso(),
@@ -54,6 +55,8 @@ def build_scan_record(repo_url: str, pr_url: str, result: dict[str, Any]) -> dic
         "gitleaks": result.get("gitleaks", []),
         "checkov": result.get("checkov", []),
     }
+    scan["blockchain_verification"] = record_scan_verification(scan)
+    return scan
 
 
 def _normalize_scan(scan: dict[str, Any]) -> dict[str, Any]:
@@ -66,6 +69,7 @@ def _normalize_scan(scan: dict[str, Any]) -> dict[str, Any]:
         "ai_audit": scan.get("ai_audit", {}) or {},
         "gitleaks": scan.get("gitleaks", []) or [],
         "checkov": scan.get("checkov", []) or [],
+        "blockchain_verification": scan.get("blockchain_verification"),
     }
 
 
@@ -148,13 +152,24 @@ def _load_scans_local() -> list[dict[str, Any]]:
 
 
 def _load_scans_supabase() -> list[dict[str, Any]]:
-    response = (
-        _get_supabase_client()
-        .table(_supabase_table())
-        .select("repo_url,pr_url,scanned_at,scan_summary,issues,ai_audit,gitleaks,checkov")
-        .order("scanned_at", desc=True)
-        .execute()
-    )
+    table = _get_supabase_client().table(_supabase_table())
+
+    try:
+        response = (
+            table.select(
+                "repo_url,pr_url,scanned_at,scan_summary,issues,ai_audit,gitleaks,checkov,blockchain_verification"
+            )
+            .order("scanned_at", desc=True)
+            .execute()
+        )
+    except Exception:
+        # Backward compatibility for deployments that have not run the new migration yet.
+        response = (
+            table.select("repo_url,pr_url,scanned_at,scan_summary,issues,ai_audit,gitleaks,checkov")
+            .order("scanned_at", desc=True)
+            .execute()
+        )
+
     return [_normalize_scan(scan) for scan in response.data]
 
 

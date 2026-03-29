@@ -85,6 +85,7 @@ export interface ScanRecord {
   ai_audit: AIAudit;
   gitleaks: GitleaksFinding[];
   checkov: CheckovFinding[];
+  blockchain_verification?: BlockchainVerification | null;
 }
 
 export interface DatasetResponse {
@@ -243,6 +244,7 @@ export interface ScannerResult {
 }
 
 export interface BlockchainVerification {
+  auditHash?: string;
   transactionHash: string;
   blockNumber: number;
   timestamp: string;

@@ -7,10 +7,14 @@ create table if not exists public.scan_history (
   issues jsonb not null default '[]'::jsonb,
   ai_audit jsonb not null default '{}'::jsonb,
   gitleaks jsonb not null default '[]'::jsonb,
-  checkov jsonb not null default '[]'::jsonb
+  checkov jsonb not null default '[]'::jsonb,
+  blockchain_verification jsonb
 );
 
 create index if not exists scan_history_scanned_at_idx
   on public.scan_history (scanned_at desc);
 
 alter table public.scan_history enable row level security;
+
+alter table public.scan_history
+  add column if not exists blockchain_verification jsonb;

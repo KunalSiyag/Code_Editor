@@ -152,6 +152,37 @@ python main.py
 
 Server runs at: `http://127.0.0.1:8001`
 
+## Optional: Blockchain Anchoring
+
+The backend now supports recording each scan hash on an EVM-compatible chain.
+
+Add these environment variables in `backend_new/.env`:
+
+```env
+BLOCKCHAIN_ENABLED=true
+BLOCKCHAIN_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
+BLOCKCHAIN_PRIVATE_KEY=0x...
+BLOCKCHAIN_CHAIN_ID=11155111
+BLOCKCHAIN_NETWORK_NAME=Ethereum Sepolia
+BLOCKCHAIN_EXPLORER_TX_BASE=https://sepolia.etherscan.io/tx
+
+# Optional
+BLOCKCHAIN_TO_ADDRESS=0x...            # defaults to sender wallet
+BLOCKCHAIN_GAS_LIMIT=100000
+BLOCKCHAIN_TX_TIMEOUT=180
+```
+
+If blockchain is not configured (or a transaction fails), the API still works and returns a local integrity hash record with `verified: false`.
+
+### Supabase migration for blockchain field
+
+If your `scan_history` table already exists, run:
+
+```sql
+alter table public.scan_history
+  add column if not exists blockchain_verification jsonb;
+```
+
 ## API Usage
 
 ### Analyze a PR
@@ -184,7 +215,16 @@ Content-Type: application/json
   "issues": [...],      
   "ai_audit": {...},    
   "gitleaks": [...],    
-  "checkov": [...]      
+  "checkov": [...],
+  "blockchain_verification": {
+    "auditHash": "0x...",
+    "transactionHash": "0x...",
+    "blockNumber": 123456,
+    "timestamp": "2026-03-29T08:42:10+00:00",
+    "network": "Ethereum Sepolia",
+    "explorerUrl": "https://sepolia.etherscan.io/tx/0x...",
+    "verified": true
+  }
 }
 ```
 

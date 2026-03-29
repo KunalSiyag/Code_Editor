@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/collapsible";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BlockchainVerificationPanel } from "@/components/pr-detail/blockchain-verification";
 import type {
   AIFinding,
   CheckovFinding,
@@ -211,6 +212,8 @@ export function ScanResultsView({ scan }: ScanResultsViewProps) {
           </div>
         </CardHeader>
       </Card>
+
+      <BlockchainVerificationPanel verification={scan.blockchain_verification ?? undefined} />
 
       <Tabs defaultValue="details" className="space-y-4">
         <TabsList className="h-auto w-full justify-start gap-2 rounded-xl bg-muted/40 p-1.5">

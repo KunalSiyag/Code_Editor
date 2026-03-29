@@ -37,6 +37,7 @@ export function BlockchainVerificationPanel({
       const timer = setTimeout(() => setVerified(true), 1000);
       return () => clearTimeout(timer);
     }
+    setVerified(false);
   }, [verification?.verified]);
 
   const copyHash = async () => {
@@ -55,8 +56,8 @@ export function BlockchainVerificationPanel({
         className="rounded-xl border border-border bg-card p-6"
       >
         <div className="flex items-center justify-center gap-3 text-muted-foreground">
-          <Clock className="h-5 w-5 animate-pulse" />
-          <span>Awaiting blockchain confirmation...</span>
+          <Clock className="h-5 w-5" />
+          <span>No blockchain record is available for this scan yet.</span>
         </div>
       </motion.div>
     );
@@ -95,8 +96,8 @@ export function BlockchainVerificationPanel({
             </span>
           ) : (
             <span className="flex items-center gap-1">
-              <Clock className="h-3 w-3 animate-spin" />
-              Confirming
+              <Clock className="h-3 w-3" />
+              Pending
             </span>
           )}
         </Badge>
@@ -167,6 +168,18 @@ export function BlockchainVerificationPanel({
             </div>
           </div>
 
+          {verification.auditHash &&
+          verification.auditHash !== verification.transactionHash ? (
+            <div>
+              <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Audit Hash
+              </label>
+              <code className="mt-1 block overflow-hidden rounded-lg bg-muted/30 px-3 py-2 font-mono text-xs text-foreground">
+                <span className="block truncate">{verification.auditHash}</span>
+              </code>
+            </div>
+          ) : null}
+
           {/* Block & Timestamp */}
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -174,7 +187,9 @@ export function BlockchainVerificationPanel({
                 Block Number
               </label>
               <p className="mt-1 font-mono text-sm text-foreground">
-                {verification.blockNumber.toLocaleString()}
+                {verification.blockNumber > 0
+                  ? verification.blockNumber.toLocaleString()
+                  : "Pending"}
               </p>
             </div>
             <div>
@@ -182,7 +197,9 @@ export function BlockchainVerificationPanel({
                 Timestamp
               </label>
               <p className="mt-1 text-sm text-foreground">
-                {new Date(verification.timestamp).toLocaleString()}
+                {verification.timestamp
+                  ? new Date(verification.timestamp).toLocaleString()
+                  : "Pending"}
               </p>
             </div>
           </div>
@@ -198,26 +215,35 @@ export function BlockchainVerificationPanel({
           </div>
 
           {/* Explorer Link */}
-          <Button asChild className="w-full bg-transparent" variant="outline">
-            <a
-              href={verification.explorerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2"
-            >
-              <ExternalLink className="h-4 w-4" />
-              View on Block Explorer
-            </a>
-          </Button>
+          {verification.explorerUrl ? (
+            <Button asChild className="w-full bg-transparent" variant="outline">
+              <a
+                href={verification.explorerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+                View on Block Explorer
+              </a>
+            </Button>
+          ) : (
+            <Button className="w-full bg-transparent" variant="outline" disabled>
+              Explorer link unavailable
+            </Button>
+          )}
         </div>
 
         {/* Immutability Notice */}
         <div className="mt-4 rounded-lg bg-muted/30 p-3">
           <p className="text-xs text-muted-foreground">
             <strong className="text-foreground">Immutable Record:</strong> This
-            audit result has been permanently recorded on the blockchain. The
-            record cannot be modified or deleted, ensuring tamper-proof
-            verification of the security analysis.
+            {verified
+              ? " audit result has been permanently recorded on the blockchain."
+              : " audit hash has been generated and is ready for blockchain anchoring."}{" "}
+            {verified
+              ? "The record cannot be modified or deleted, ensuring tamper-proof verification of the security analysis."
+              : "Configure the blockchain environment variables in the backend to enable live on-chain confirmation."}
           </p>
         </div>
       </div>
